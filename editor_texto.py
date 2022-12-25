@@ -54,7 +54,7 @@ class Editor(tk.Tk):
 
     def _abrir_archivo(self):
         #se abre el archivo para edicion (lectura y escritura)
-        self._archivo_abierto = askopenfile(mode='r')
+        self.archivo_abierto = askopenfile(mode='r+')
         #eliminamos el texto anterior
         self.campo_texto.delete(1.0,tk.END)
         #revisamos si hay un archivo 
@@ -62,7 +62,7 @@ class Editor(tk.Tk):
             return
         #abrimos el archivo en modo archivo lectura escritura
 
-        with open(self.archivo_abierto.name, 'r') as self.archivo:
+        with open(self.archivo_abierto.name, 'r+') as self.archivo:
             #leemos el contenido del archivo
             texto = self.archivo.read()
             #insertamos todo el contenido del archivo del campo de texto 
@@ -91,8 +91,18 @@ class Editor(tk.Tk):
     def _guardar_como(self):
         #Salvamos el archivo actual como un archivo nuevo 
         self.archivo = asksaveasfilename( defaultextension='txt', filetypes=[('Archivo de Texto','*.txt'),('Todos los archivos','*.*')])
-
-
+        if not self.archivo:
+            return
+        #Abrimos el archivo en modo escrituta (write)
+        with open(self.archivo, 'w') as self.archivo:
+            #leemos el contenido de la caja de texto 
+            texto = self.campo_texto.get(1.0, tk.END)
+            #escribimos el contenido al nuevo archivo 
+            self.archivo.write(texto)
+            #combinamos el nombredelarchivo 
+            self.title(f'editor texto - {self.archivo.name}')
+            #indicamos que ya abrimos un archivo 
+            self.archivo_abierto = archivo
 
 
 
